@@ -44,7 +44,7 @@ plot.interactive(False)
 
 With this piece of code, the output will be a scatter plot:
 
-![](C2_DTLZ2.png)
+![](img/C2_DTLZ2.png)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
