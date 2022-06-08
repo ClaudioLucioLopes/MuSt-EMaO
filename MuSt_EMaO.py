@@ -15,7 +15,7 @@ import numpy as np
 #        ND final solutions in decision variables,ND final solutions in objective,
 #        ideal_point,nadir_point,number of generations executed, number of solutions evaluations executed
 ##########################################################################################################
-def call_NSGA3(problem,n_points,n_obj,data_unit_simplex,sampling_p,n_gen,n_eval,termination=None,seed_p=1):
+def call_NSGAIII(problem, n_points, n_obj, data_unit_simplex, sampling_p, n_gen, n_eval, termination=None, seed_p=1):
     if len(sampling_p)==0:
         algorithm = NSGA3(pop_size=n_points,n_obj=n_obj,
                       ref_dirs=data_unit_simplex,seed=seed_p)
@@ -244,12 +244,17 @@ def Reduce(pareto_front, n_points):
 
 ##########################################################################################################
 #Input: a problem test set, number of solutions, number of objectives, a seed, a total number of solution
-#       evaluations, a test T configuration(percentage to be applied in each stage), a log print-- verbose,
-#       an EMaO algorithm ,
+#       evaluations, a gamma to apply in the T configuration set(tested values are 2/3, 1/3 and 1/2),
+#       a log print-- verbose,
+#       an EMaO algorithm (3 algorithms are available in this implementation: NSGA-III, MOEA/D, C-TAEA) ,
 #Output: ND solutions in objective space with number of solutions, number of generations, number of
 #        solutions evaluations executed, the final reference vector in Stage 3 with i=2
 ##########################################################################################################
-def MuSt_EMaO(problem, n_points, n_obj, seed_p, total_neval_par, confT, logprint,  alg='NSGA3'):
+def MuSt_EMaO(problem, n_points, n_obj, seed_p, total_neval_par, gamma, logprint,  alg='NSGA-III'):
+
+
+    confT = [ gamma/2, gamma/2, gamma ]
+
     total_ngen = 0
     total_neval = 0
 
@@ -257,12 +262,12 @@ def MuSt_EMaO(problem, n_points, n_obj, seed_p, total_neval_par, confT, logprint
     E1=int(total_neval_par*confT[0])
 
     R_1 = get_reference_directions("energy", n_obj,int(n_points), seed=seed_p)
-    if alg=='NSGA3':
-        S1_all_x_var,S1_all_f_var,S1_ND_x_var,S1_ND_f_var,ideal_point_S1,nadir_point_S1,n_eval_1,n_gen1 = call_NSGA3(problem,n_points,n_obj,R_1,[],0,E1,None,seed_p)
-    elif alg=='MOEAD':
+    if alg=='NSGA-III':
+        S1_all_x_var,S1_all_f_var,S1_ND_x_var,S1_ND_f_var,ideal_point_S1,nadir_point_S1,n_eval_1,n_gen1 = call_NSGAIII(problem, n_points, n_obj, R_1, [], 0, E1, None, seed_p)
+    elif alg=='MOEA/D':
         S1_all_x_var, S1_all_f_var, S1_ND_x_var, S1_ND_f_var, ideal_point_S1, nadir_point_S1, n_eval_1, n_gen1 = call_MOEAD(
             problem, n_points, n_obj, R_1, [ ], 0, E1, None, seed_p)
-    elif alg=='CTAEA':
+    elif alg=='C-TAEA':
         S1_all_x_var, S1_all_f_var, S1_ND_x_var, S1_ND_f_var, ideal_point_S1, nadir_point_S1, n_eval_1, n_gen1 = call_CTAEA(
             problem, n_points, n_obj, R_1, [ ], 0, E1, None, seed_p)
     total_neval+=n_eval_1
@@ -290,13 +295,13 @@ def MuSt_EMaO(problem, n_points, n_obj, seed_p, total_neval_par, confT, logprint
     E3 = int(total_neval_par * confT[ 2 ] )
 
     if (N1 == n_points):
-        if alg == 'NSGA3':
-            S23_all_x_var, S23_all_f_var, S23_ND_x_var, S23_ND_f_var, ideal_point_S23, nadir_point_S23, n_eval_23, n_gen23 = call_NSGA3(
+        if alg == 'NSGA-III':
+            S23_all_x_var, S23_all_f_var, S23_ND_x_var, S23_ND_f_var, ideal_point_S23, nadir_point_S23, n_eval_23, n_gen23 = call_NSGAIII(
                 problem, n_points, n_obj, R_1, S1_T1_1c_x_var, 0, E2+E3, None, seed_p)
-        elif alg == 'MOEAD':
+        elif alg == 'MOEA/D':
             S23_all_x_var, S23_all_f_var, S23_ND_x_var, S23_ND_f_var, ideal_point_S23, nadir_point_S23, n_eval_23, n_gen23 = call_MOEAD(
                 problem, n_points, n_obj, R_1, S1_T1_1c_x_var, 0, E2+E3, None, seed_p)
-        elif alg == 'CTAEA':
+        elif alg == 'C-TAEA':
             S23_all_x_var, S23_all_f_var, S23_ND_x_var, S23_ND_f_var, ideal_point_S23, nadir_point_S23, n_eval_23, n_gen23 = call_CTAEA(
                 problem, n_points, n_obj, R_1, S1_T1_1c_x_var, 0, E2+E3, None, seed_p)
         total_neval += n_eval_23
@@ -324,11 +329,11 @@ def MuSt_EMaO(problem, n_points, n_obj, seed_p, total_neval_par, confT, logprint
         S_final = Reduce(S_final_f_var, n_points)
         R_3=R_1
     else:
-        if alg=='NSGA3':
-            S2_all_x_var,S2_all_f_var,S2_ND_x_var,S2_ND_f_var,ideal_point_S2,nadir_point_S2,n_eval_2,n_gen2 = call_NSGA3(problem,R_1_cbar.shape[0],n_obj,R_1_cbar,S1_all_x_var,0,E2,None,seed_p)
-        elif alg=='MOEAD':
+        if alg=='NSGA-III':
+            S2_all_x_var,S2_all_f_var,S2_ND_x_var,S2_ND_f_var,ideal_point_S2,nadir_point_S2,n_eval_2,n_gen2 = call_NSGAIII(problem, R_1_cbar.shape[0 ], n_obj, R_1_cbar, S1_all_x_var, 0, E2, None, seed_p)
+        elif alg=='MOEA/D':
             S2_all_x_var,S2_all_f_var,S2_ND_x_var,S2_ND_f_var,ideal_point_S2,nadir_point_S2, n_eval_2, n_gen2 = call_MOEAD(problem, R_1_cbar.shape[0], n_obj, R_1_cbar, S1_all_x_var,0,E2, None,seed_p)
-        elif alg=='CTAEA':
+        elif alg=='C-TAEA':
             S2_all_x_var,S2_all_f_var,S2_ND_x_var,S2_ND_f_var,ideal_point_S2,nadir_point_S2, n_eval_2, n_gen2 = call_CTAEA(problem, R_1_cbar.shape[0],
                                                                                                     n_obj, R_1_cbar, S1_all_x_var, 0,E2, None,seed_p)
 
@@ -384,17 +389,17 @@ def MuSt_EMaO(problem, n_points, n_obj, seed_p, total_neval_par, confT, logprint
             for i_stage3 in range(2):
                 N3 = int(n_points * (N3 / size_S_iminus1_3c))
                 R_3 = get_reference_directions("energy", n_obj, N3, seed=seed_p)
-                if alg == 'NSGA3':
+                if alg == 'NSGA-III':
                     S3i_all_x_var, S3i_all_f_var, S3i_ND_x_var, S3i_ND_f_var, \
-                    ideal_point_S3i, nadir_point_S3i, n_eval_3i, n_gen3i = call_NSGA3(problem, N3, n_obj,
-                                                                                  R_3,
-                                                                                  S_iminus1_3_x_var, 0, int(E3/2), None, seed_p)
-                elif alg == 'MOEAD':
+                    ideal_point_S3i, nadir_point_S3i, n_eval_3i, n_gen3i = call_NSGAIII(problem, N3, n_obj,
+                                                                                        R_3,
+                                                                                        S_iminus1_3_x_var, 0, int(E3/2), None, seed_p)
+                elif alg == 'MOEA/D':
                     S3i_all_x_var, S3i_all_f_var, S3i_ND_x_var, S3i_ND_f_var, \
                     ideal_point_S3i, nadir_point_S3i, n_eval_3i, n_gen3i = call_MOEAD(problem, N3, n_obj,
                                                                                   R_3,
                                                                                   S_iminus1_3_x_var, 0, int(E3/2), None, seed_p)
-                elif alg == 'CTAEA':
+                elif alg == 'C-TAEA':
                     S3i_all_x_var, S3i_all_f_var, S3i_ND_x_var, S3i_ND_f_var, \
                     ideal_point_S3i, nadir_point_S3i, n_eval_3i, n_gen3i= call_CTAEA(problem, N3, n_obj,
                                                                                   R_3,
