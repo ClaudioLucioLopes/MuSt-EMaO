@@ -252,8 +252,7 @@ def Reduce(pareto_front, n_points):
 ##########################################################################################################
 def MuSt_EMaO(problem, n_points, n_obj, seed_p, total_neval_par, gamma, logprint,  alg='NSGA-III'):
 
-
-    confT = [ gamma/2, gamma/2, gamma ]
+    confT = np.array([ gamma/2, gamma/2, gamma ])
 
     total_ngen = 0
     total_neval = 0
