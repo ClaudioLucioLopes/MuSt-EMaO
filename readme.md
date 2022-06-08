@@ -19,7 +19,7 @@ pip install -U pymoo
 import numpy as np
 from pymoo.factory import get_problem,get_reference_directions
 from pymoo.visualization.scatter import Scatter
-from MuSt_EMaO import MuSt_EMaO,call_NSGA3,call_MOEAD,call_CTAEA
+from MuSt_EMaO import MuSt_EMaO
 import pickle
 
 seed_p=1
