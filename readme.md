@@ -2,7 +2,7 @@
 
 Evolutionary multi-objective and many-objective optimization (EMO and EMaO) algorithms are increasingly being used to identify the true shape and location of the Pareto-optimal front using a few representative well-converged and well-distributed solutions. The reason for their popularity is due to their ability to provide a better understanding of objective relationships for optimal solutions, and also to facilitate the choice of a preferred solution using an interactive or post-optimal multi-criterion decision analysis. However, since EMO and EMaO algorithms are stochastic, a single application may not provide a true representative set with a desired number of Pareto solutions reliably in repetitive runs and importantly with a well-distributed set of solutions. In this paper, we propose a multi-stage framework involving reference-vector based evolutionary multi- and many-objective algorithms (MuSt-EMO and MuSt-EMaO) that attempts to recursively rectify shortcomings of previous stages by careful executions of subsequent stages so that a prescribed number of well-distributed and well-converged solutions are achieved at the end. The proposed multi-stage approach is implemented to a number of popular reference vector based EMO/EMaO algorithms and is applied on various multi-and many-objective test and real-world problems.  
 
-This code is the implementation of our proposed framerwork, as described in 
+This code is the implementation of our proposed framework, as described in 
 [Identifying Pareto Fronts Reliably Using a Multi-Stage Reference-vector-based Framework](https://ieeexplore.ieee.org/document/10057109)
 
 This code was implemented using pymoo  
