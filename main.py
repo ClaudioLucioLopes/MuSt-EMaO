@@ -1,10 +1,12 @@
 import numpy as np
+import matplotlib
+matplotlib.use('TkAgg')
 from pymoo.factory import get_problem,get_reference_directions
 from pymoo.visualization.scatter import Scatter
 from MuSt_EMaO import MuSt_EMaO
 
 if __name__ == '__main__':
-    seed_p = 1
+    seed_p = 7
     n_points = 100
     nb_eval = 20000
     n_obj = 3
@@ -31,4 +33,3 @@ if __name__ == '__main__':
     plot = Scatter()
     plot.add(final_PF)
     plot.show(block=True)
-    plot.interactive(False)
