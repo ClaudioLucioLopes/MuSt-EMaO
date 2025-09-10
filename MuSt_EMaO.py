@@ -2,7 +2,8 @@ from pymoo.optimize import minimize
 from pymoo.algorithms.moo.nsga3 import NSGA3, associate_to_niches
 from pymoo.algorithms.moo.moead import MOEAD
 from pymoo.algorithms.moo.ctaea import CTAEA
-from pymoo.factory import get_reference_directions, get_termination
+from pymoo.util.ref_dirs import get_reference_directions 
+from pymoo.termination import get_termination
 from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
 import numpy as np
 
