@@ -302,7 +302,7 @@ def MuSt_EMaO(problem, n_points, n_obj, seed_p, total_neval_par, gamma, logprint
         if alg == 'NSGA-III':
             S2_all_x_var, S2_all_f_var, S2_ND_x_var, S2_ND_f_var, ideal_point_S2, nadir_point_S2, n_eval_2, n_gen2 = \
                 call_NSGAIII(problem, R_1_cbar.shape[ 0 ], n_obj, R_1_cbar, S1_all_x_var, 0, E2, None, seed_p)
-        elif alg == 'MOEAD':
+        elif alg == 'MOEA/D':
             S2_all_x_var, S2_all_f_var, S2_ND_x_var, S2_ND_f_var, ideal_point_S2, nadir_point_S2, n_eval_2, n_gen2 = call_MOEAD(
                 problem, R_1_cbar.shape[ 0 ], n_obj, R_1_cbar, S1_all_x_var, 0, E2, None, seed_p)
         elif alg == 'CTAEA':
