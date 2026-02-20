@@ -20,7 +20,8 @@ pip install -U pymoo
 
 ```python
 import numpy as np
-from pymoo.factory import get_problem,get_reference_directions
+from pymoo.util.ref_dirs import get_reference_directions
+from pymoo.problems import get_problem
 from pymoo.visualization.scatter import Scatter
 from MuSt_EMaO import MuSt_EMaO
 
