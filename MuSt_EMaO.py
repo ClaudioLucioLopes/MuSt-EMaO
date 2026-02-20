@@ -46,7 +46,7 @@ def call_NSGAIII(problem, n_points, n_obj, data_unit_simplex, sampling_p, n_gen,
             np.full([ 1, n_var ], np.nan), np.full([ 1, n_obj ], np.nan), np.full([ 1, n_obj ], np.nan), np.full(
             [ 1, n_obj ], np.nan), n_evals, n_gen
 
-    # Verify the if the solution is factible
+    # Verify if the solution is feasible
     if (np.sum(res.pop.get('G') == None) > 0):
         x_var = res.pop.get('X')
         f_var = res.pop.get('F')
@@ -106,13 +106,20 @@ def call_CTAEA(problem, n_points, n_obj, data_unit_simplex, sampling_p, n_gen, n
             np.full([ 1, n_var ], np.nan), np.full([ 1, n_obj ], np.nan), np.full([ 1, n_obj ], np.nan), np.full(
             [ 1, n_obj ], np.nan), n_evals, n_gen
 
-    # Verify the if the solution is factible
+    # Verify if the solution is feasible
     if np.sum(res.pop.get('G') is None) > 0:  # there is no constraints
         x_var = res.pop.get('X')
         f_var = res.pop.get('F')
     else:
         x_var = res.pop.get('X')[ np.sum(res.pop.get('G') > 0, axis=1) == 0, : ]
         f_var = res.pop.get('F')[ np.sum(res.pop.get('G') > 0, axis=1) == 0, : ]
+        
+    if len(f_var) == 0:
+        n_evals = res.algorithm.evaluator.n_eval
+        n_gen = res.algorithm.n_gen
+        return np.full([ 1, n_var ], np.nan), np.full([ 1, n_obj ], np.nan), \
+            np.full([ 1, n_var ], np.nan), np.full([ 1, n_obj ], np.nan), np.full([ 1, n_obj ], np.nan), np.full(
+            [ 1, n_obj ], np.nan), n_evals, n_gen
 
     non_dominated_index = NonDominatedSorting(method="fast_non_dominated_sort").do(f_var,
                                                                                    only_non_dominated_front=True)
