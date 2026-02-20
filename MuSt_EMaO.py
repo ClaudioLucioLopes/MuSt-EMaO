@@ -53,6 +53,13 @@ def call_NSGAIII(problem, n_points, n_obj, data_unit_simplex, sampling_p, n_gen,
     else:
         x_var = res.pop.get('X')[ np.sum(res.pop.get('G') > 0, axis=1) == 0, : ]
         f_var = res.pop.get('F')[ np.sum(res.pop.get('G') > 0, axis=1) == 0, : ]
+        
+    if len(f_var) == 0:
+        n_evals = res.algorithm.evaluator.n_eval
+        n_gen = res.algorithm.n_gen
+        return np.full([ 1, n_var ], np.nan), np.full([ 1, n_obj ], np.nan), \
+            np.full([ 1, n_var ], np.nan), np.full([ 1, n_obj ], np.nan), np.full([ 1, n_obj ], np.nan), np.full(
+            [ 1, n_obj ], np.nan), n_evals, n_gen
 
     non_dominated_index = NonDominatedSorting(method="fast_non_dominated_sort").do(f_var,
                                                                                    only_non_dominated_front=True)
@@ -344,8 +351,8 @@ def MuSt_EMaO(problem, n_points, n_obj, seed_p, total_neval_par, gamma, logprint
             print('N2: ', N2)
     else:
         E3 = E3 + E2
-        S2_all_f_var = np.array([ [ ] ])
-        S2_all_x_var = np.array([ [ ] ])
+        S2_all_f_var = np.empty((0, n_obj))
+        S2_all_x_var = np.empty((0, problem.n_var))
         S_0_3c_x_var = S1_T1_1c_x_var
         S_0_3c_f_var = S1_T1_1c_f_var
 
